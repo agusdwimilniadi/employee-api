@@ -13,64 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model Karyawan {
-//   id                Int                @id @default(autoincrement())
-//   address           String
-//   created_date      DateTime           @default(now())
-//   deleted_date      DateTime?
-//   dob               DateTime
-//   name              String
-//   status            String
-//   updated_date      DateTime           @updatedAt
-//   karyawan_detail   KaryawanDetail?    @relation(fields: [id])
-//   karyawan_training KaryawanTraining[]
-//   rekening          Rekening?
-// }
-
-// model KaryawanDetail {
-//   id           Int       @id @default(autoincrement())
-//   created_date DateTime  @default(now())
-//   deleted_date DateTime?
-//   nik          String
-//   npwp         String
-//   updated_date DateTime  @updatedAt
-//   id_karyawan  Int       @unique
-//   karyawan     Karyawan  @relation(fields: [id_karyawan])
-// }
-
-// model KaryawanTraining {
-//   id            Int       @id @default(autoincrement())
-//   created_date  DateTime  @default(now())
-//   deleted_date  DateTime?
-//   training_date DateTime
-//   updated_date  DateTime  @updatedAt
-//   id_karyawan   Int
-//   id_training   Int
-//   karyawan      Karyawan  @relation(fields: [id_karyawan], references: [id])
-//   training      Training  @relation(fields: [id_training], references: [id])
-// }
-
-// model Training {
-//   id                Int                @id @default(autoincrement())
-//   created_date      DateTime           @default(now())
-//   deleted_date      DateTime?
-//   pengajar          String
-//   tema              String
-//   updated_date      DateTime           @updatedAt
-//   karyawan_training KaryawanTraining[]
-// }
-
-// model Rekening {
-//   id           Int       @id @default(autoincrement())
-//   created_date DateTime  @default(now())
-//   deleted_date DateTime?
-//   nama         String
-//   norek        String
-//   updated_date DateTime  @updatedAt
-//   id_karyawan  Int       @unique
-//   karyawan     Karyawan  @relation(fields: [id_karyawan], references: [id])
-// }
-
 model Karyawan {
   id                 Int                @id @default(autoincrement())
   address            String
@@ -80,7 +22,7 @@ model Karyawan {
   created_at         DateTime           @default(now())
   deleted_at         DateTime?
   updated_at         DateTime           @updatedAt
-  Rekening           Rekening?
+  Rekening           Rekening[]
   id_karyawan_detail Int                @unique
   karyawanDetail     KaryawanDetail     @relation(fields: [id_karyawan_detail], references: [id], onDelete: Cascade, onUpdate: Cascade)
   KaryawanTraining   KaryawanTraining[]
@@ -94,7 +36,7 @@ model Rekening {
   created_at     DateTime  @default(now())
   deleted_at     DateTime?
   updated_at     DateTime  @updatedAt
-  id_karyawan    Int       @unique
+  id_karyawan    Int
   karyawanDetail Karyawan  @relation(fields: [id_karyawan], references: [id])
 }
 
@@ -127,4 +69,14 @@ model Training {
   deleted_at       DateTime?
   updated_at       DateTime           @updatedAt
   KaryawanTraining KaryawanTraining[]
+}
+
+model User {
+  id         String    @id @unique @default(uuid())
+  name       String
+  email      String    @unique
+  password   String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  deleted_at DateTime?
 }
