@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// model Karyawan {
+//   id                Int                @id @default(autoincrement())
+//   address           String
+//   created_date      DateTime           @default(now())
+//   deleted_date      DateTime?
+//   dob               DateTime
+//   name              String
+//   status            String
+//   updated_date      DateTime           @updatedAt
+//   karyawan_detail   KaryawanDetail?    @relation(fields: [id])
+//   karyawan_training KaryawanTraining[]
+//   rekening          Rekening?
+// }
+
+// model KaryawanDetail {
+//   id           Int       @id @default(autoincrement())
+//   created_date DateTime  @default(now())
+//   deleted_date DateTime?
+//   nik          String
+//   npwp         String
+//   updated_date DateTime  @updatedAt
+//   id_karyawan  Int       @unique
+//   karyawan     Karyawan  @relation(fields: [id_karyawan])
+// }
+
+// model KaryawanTraining {
+//   id            Int       @id @default(autoincrement())
+//   created_date  DateTime  @default(now())
+//   deleted_date  DateTime?
+//   training_date DateTime
+//   updated_date  DateTime  @updatedAt
+//   id_karyawan   Int
+//   id_training   Int
+//   karyawan      Karyawan  @relation(fields: [id_karyawan], references: [id])
+//   training      Training  @relation(fields: [id_training], references: [id])
+// }
+
+// model Training {
+//   id                Int                @id @default(autoincrement())
+//   created_date      DateTime           @default(now())
+//   deleted_date      DateTime?
+//   pengajar          String
+//   tema              String
+//   updated_date      DateTime           @updatedAt
+//   karyawan_training KaryawanTraining[]
+// }
+
+// model Rekening {
+//   id           Int       @id @default(autoincrement())
+//   created_date DateTime  @default(now())
+//   deleted_date DateTime?
+//   nama         String
+//   norek        String
+//   updated_date DateTime  @updatedAt
+//   id_karyawan  Int       @unique
+//   karyawan     Karyawan  @relation(fields: [id_karyawan], references: [id])
+// }
+
+model Karyawan {
+  id                 Int                @id @default(autoincrement())
+  address            String
+  dob                DateTime
+  name               String
+  status             String
+  created_at         DateTime           @default(now())
+  deleted_at         DateTime?
+  updated_at         DateTime           @updatedAt
+  Rekening           Rekening?
+  id_karyawan_detail Int                @unique
+  karyawanDetail     KaryawanDetail     @relation(fields: [id_karyawan_detail], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  KaryawanTraining   KaryawanTraining[]
+}
+
+model Rekening {
+  id             Int       @id @default(autoincrement())
+  nama           String
+  nomor          String
+  jenis          String
+  created_at     DateTime  @default(now())
+  deleted_at     DateTime?
+  updated_at     DateTime  @updatedAt
+  id_karyawan    Int       @unique
+  karyawanDetail Karyawan  @relation(fields: [id_karyawan], references: [id])
+}
+
+model KaryawanDetail {
+  id         Int       @id @default(autoincrement())
+  nik        String
+  npwp       String
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+  updated_at DateTime  @updatedAt
+  Karyawan   Karyawan?
+}
+
+model KaryawanTraining {
+  id          Int       @id @default(autoincrement())
+  id_karyawan Int
+  id_training Int
+  created_at  DateTime  @default(now())
+  deleted_at  DateTime?
+  updated_at  DateTime  @updatedAt
+  Karyawan    Karyawan  @relation(fields: [id_karyawan], references: [id])
+  Training    Training  @relation(fields: [id_training], references: [id])
+}
+
+model Training {
+  id               Int                @id @default(autoincrement())
+  pengajar         String
+  tema             String
+  created_at       DateTime           @default(now())
+  deleted_at       DateTime?
+  updated_at       DateTime           @updatedAt
+  KaryawanTraining KaryawanTraining[]
+}
