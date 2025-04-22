@@ -30,7 +30,7 @@ export const registerController = async (req: Request, res: Response) => {
             },
         });
         if (emailCheck) {
-            res.json(
+            res.status(400).json(
                 formatResponse(false, 400, 'Failed', {
                     message: 'Email already registered',
                 })
@@ -105,12 +105,12 @@ export const loginController = async (req: Request, res: Response) => {
                 expiresIn: '1h',
             }
         );
-        res.json(
+        res.status(200).json(
             formatResponse(true, 200, 'Success', {
                 token,
             })
         );
     } catch (error) {
-        res.json(formatResponse(false, 500, 'error', error));
+        res.status(500).json(formatResponse(false, 500, 'error', error));
     }
 };

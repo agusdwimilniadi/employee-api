@@ -4,12 +4,15 @@ import trainingRoutes from './routes/trainingRoutes';
 import employeeTraining from './routes/karyawanTraining';
 import rekeningRoutes from './routes/rekeningRoutes';
 import authRoutes from './routes/authRoutes';
+import cors from 'cors';
 
 import { authtenticateToken } from './middleware/authMiddleware';
 
 const app = express();
 const PORT = process.env.PORT || 8001;
+app.use(cors({
 
+}));
 app.use(express.json());
 // auth
 app.use('/api/auth', authRoutes);

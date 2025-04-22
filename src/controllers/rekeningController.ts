@@ -16,9 +16,7 @@ export const getrekeningById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const rekening = await prisma.rekening.findUnique({
-            where: {
-                id: Number(id),
-            },
+            where: { id: Number(id) },
             include: {
                 karyawanDetail: true,
             },
@@ -35,8 +33,12 @@ const rekeningSchema = Joi.object({
     nomor: Joi.string().required(),
     jenis: Joi.string().required(),
 });
+
 export const createRekening = async (req: Request, res: Response) => {
-    const { error } = rekeningSchema.validate(req.body, { abortEarly: false });
+    const { error } = rekeningSchema.validate(req.body, {
+        abortEarly: false,
+    });
+
     if (error) {
         res.status(400).json({
             success: false,
@@ -49,28 +51,45 @@ export const createRekening = async (req: Request, res: Response) => {
 
     try {
         const { id_karyawan, nama, nomor, jenis } = req.body;
-
-        const karyawan = await prisma.karyawan.findUnique({
-            where: { id: id_karyawan },
-        });
-
-        if (!karyawan) {
-            res.status(400).json({
-                success: false,
-                statusCode: 400,
-                message: `Karyawan dengan id ${id_karyawan} tidak ditemukan.`,
-            });
-        }
-
         const rekening = await prisma.rekening.create({
             data: {
+                id_karyawan,
                 nama,
                 nomor,
                 jenis,
-                id_karyawan,
             },
         });
+        res.json(formatResponse(true, 200, 'Success', rekening));
+    } catch (error) {
+        res.status(500).json({ message: error });
+    }
+};
 
+export const updateRekening = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { id_karyawan, nama, nomor, jenis } = req.body;
+        const rekening = await prisma.rekening.update({
+            where: { id: Number(id) },
+            data: {
+                id_karyawan,
+                nama,
+                nomor,
+                jenis,
+            },
+        });
+        res.json(formatResponse(true, 200, 'Success', rekening));
+    } catch (error) {
+        res.status(500).json({ message: error });
+    }
+};
+
+export const deleteRekening = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const rekening = await prisma.rekening.delete({
+            where: { id: Number(id) },
+        });
         res.json(formatResponse(true, 200, 'Success', rekening));
     } catch (error) {
         res.status(500).json({ message: error });
